@@ -12,5 +12,10 @@
   "description": "",
   "devDependencies": {
     "live-server": "^1.2.2"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^4.0.0"
   }
 }
