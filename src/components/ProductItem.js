@@ -1,4 +1,5 @@
 import { Component } from "../common/Component.js";
+import { cartContext } from "../contexts/CartContext.js";
 
 export class ProductItem extends Component {
   constructor(product) {
@@ -6,39 +7,36 @@ export class ProductItem extends Component {
     this.product = product;
   }
 
-  render() {
-    const { title, description, price, image } = this.product;
-
-    const handleAddToCart = () => {
-      console.log(`${title} added to cart`);
-    };
-
-    const itemElement = document.createElement("li");
-    itemElement.className = "product-item";
-
-    // 商品名の表示
-    const productTitle = document.createElement("h3");
-    title.textContent = this.product.title;
-    itemElement.appendChild(productTitle);
-
-    // 商品画像の表示
-    const productImage = document.createElement("img");
-    image.src = this.product.image;
-    image.alt = this.product.title;
-    image.className = "product-image";
-    itemElement.appendChild(productImage);
-
-    // カート追加ボタンの作成
-    const addToCartButton = document.createElement("button");
-    addToCartButton.textContent = "Add to Cart";
-    addToCartButton.className = "add-to-cart";
-    itemElement.appendChild(addToCartButton);
-
-    return itemElement;
-
-    productElement.querySelector(".add-btn").addEventListener("click", () => {
+  addProductToCart() {
+    if (this.product){
       cartContext.addProduct(this.product);
+    }
+  }
+
+  render() {
+    const productElement = document.createElement("div");
+    productElement.classList.add("product-item");
+
+    const productTitle = document.createElement("h2");
+    productTitle.textContent = this.product.title;
+
+    const productPrice = document.createElement("p");
+    productPrice.textContent = `$${this.product.price.toFixed(2)}`;
+
+    const productImage = document.createElement("img");
+    productImage.src = this.product.image;
+    productImage.alt = this.product.title;
+
+    const button = document.createElement("button");
+    button.textContent = "Add to Cart";
+    button.addEventListener("click", () => {
+      this.addProductToCart();
     });
+
+    productElement.appendChild(productTitle);
+    productElement.appendChild(productPrice);
+    productElement.appendChild(productImage);
+    productElement.appendChild(button);
 
     return productElement;
   }

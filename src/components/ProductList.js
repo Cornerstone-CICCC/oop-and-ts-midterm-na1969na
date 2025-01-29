@@ -1,42 +1,45 @@
 import { Component } from "../common/Component.js";
-import { ProductItem } from "../components/ProductItem.js";
+import { ProductItem } from "./ProductItem.js";
 
 export class ProductList extends Component {
   constructor() {
     super();
-    this.state = {
-      products: [],
-    };
-    this.getProducts();
+    this.products = [];
+    this.fetchProducts();
   }
 
-  async getProducts() {
-    fetch("https://fakestoreapi.com/products")
-      .then((response) => response.json())
-      .then((products) => {
-        console.log(products);
-        this.render();
-      });
-  }
-
-  handleAddToCart(product) {
-    console.log(`Product added to cart: ${product.title}`);
+  async fetchProducts() {
+    try {
+      const response = await fetch("https://fakestoreapi.com/products");
+      const data = await response.json();
+      this.products = data;
+      this.products = data.map(product => ({
+        ...product,
+        quantity: 0,
+      }));
+      console.log("Products fetched:", this.products);
+      this.render();
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
   }
 
   render() {
     const productListElement = document.createElement("div");
-    productListElement.className = "product-list";
+    productListElement.classList.add("product-list");
 
-    const listElement = document.createElement("ul");
-    listElement.id = "product-list-ul";
+    this.products.forEach(product => {
+      const productItem = new ProductItem(product);
+      productListElement.appendChild(productItem.render());
+    });
 
-    productListElement.appendChild(listElement);
-
-    // listElement.innerHTML = "";
-    // this.state.products.forEach((product) => {
-    //   const productItem = new ProductItem(product);
-    //   listElement.appendChild(productItem.render());
-    // });
+    const wrapperProductList = document.querySelector("#wrapper-product-list");
+    if (wrapperProductList) {
+      wrapperProductList.innerHTML = "";
+      wrapperProductList.appendChild(productListElement);
+    } else {
+      console.error("Element #wrapper-product-list not found in the DOM");
+    }
 
     return productListElement;
   }

@@ -4,20 +4,35 @@ export class CartContext {
     this.listeners = [];
   }
 
-  getTodos() {
+  getCartList() {
     return this.cartItems;
   }
   
   addProduct(product) {
-    this.cartItems.push(product);
-    console.log(this.todos);
+    const existingItem = this.cartItems.find(item => item.id === product.id);
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      this.cartItems.push({ ...product, quantity: 1 });
+    }
+    console.log(this.cartItems);
     this.notifyListeners();
   }
 
-  updateQuantity(id, quantity) {
+  increaseProductQuantity(id) {
     this.cartItems = this.cartItems.map((item) => {
       if (item.id === id) {
-        item.quantity = quantity;
+        item.quantity += 1;
+      }
+      return item;
+    });
+    this.notifyListeners();
+  }
+
+  decreaseProductQuantity(id) {
+    this.cartItems = this.cartItems.map((item) => {
+      if (item.id === id) {
+        item.quantity -= 1;
       }
       return item;
     });
@@ -34,7 +49,7 @@ export class CartContext {
   }
 
   notifyListeners() {
-    this.listeners.forEach((listener) => listener(this.todos));
+    this.listeners.forEach((listener) => listener(this.cartItems));
   }
   
 }

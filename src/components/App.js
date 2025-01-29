@@ -1,17 +1,26 @@
 import { Component } from "../common/Component.js";
-import { ProductList } from "../components/ProductList.js";
+import { Header } from "./Header.js";
+import { ProductList } from "./ProductList.js";
+import { Footer } from "./Footer.js";
 
 export class App extends Component {
   render() {
-    // const container = document.createElement('div')
-    // container.className = 'container'
-    // container.innerHTML = `
-    //   <h1>My To Dos</h1>
-    //   <div id="wrapper-add"></div>
-    //   <div id="wrapper-todos"></div>
-    // `
+    const container = document.createElement("div");
+    container.className = "container";
+    container.innerHTML = `
+      <header id="main-header"></header>
+      <div id="wrapper-product-list"></div>
+      <footer id="main-footer"></footer>
+    `;
 
-    // const productList = new ProductList().render()
-    // container.querySelector('#wrapper-add').appendChild(productList)
+    const header = new Header().render()
+    const productList = new ProductList().render()
+    const footer = new Footer().render()
+
+    container.querySelector('#main-header').appendChild(header)
+    container.querySelector('#wrapper-product-list').appendChild(productList)
+    container.querySelector('#main-footer').appendChild(footer)
+
+    return container;
   }
 }
