@@ -2,8 +2,9 @@ import { Component } from "../common/Component.js";
 import { ProductItem } from "./ProductItem.js";
 
 export class ProductList extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.cartContext = props.cartContext;
     this.products = [];
     this.fetchProducts();
   }
@@ -12,35 +13,32 @@ export class ProductList extends Component {
     try {
       const response = await fetch("https://fakestoreapi.com/products");
       const data = await response.json();
-      this.products = data;
       this.products = data.map(product => ({
-        ...product,
-        quantity: 0,
+        id: product.id,
+        name: product.title,
+        price: product.price,
+        image: product.image,
       }));
-      console.log("Products fetched:", this.products);
-      this.render();
+      const productContainer = document.getElementById("products")
+      productContainer.innerHTML = "";
+      this.mount(productContainer);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Failed to fetch products:", error);
     }
   }
 
   render() {
-    const productListElement = document.createElement("div");
-    productListElement.classList.add("product-list");
+    const productsGrid = document.createElement("div");
+    productsGrid.className = "products-grid";
 
-    this.products.forEach(product => {
-      const productItem = new ProductItem(product);
-      productListElement.appendChild(productItem.render());
+    this.products.forEach((product) => {
+      const productItem = new ProductItem({
+        product,
+        cartContext: this.cartContext,
+      });
+      productsGrid.appendChild(productItem.render());
     });
 
-    const wrapperProductList = document.querySelector("#wrapper-product-list");
-    if (wrapperProductList) {
-      wrapperProductList.innerHTML = "";
-      wrapperProductList.appendChild(productListElement);
-    } else {
-      console.error("Element #wrapper-product-list not found in the DOM");
-    }
-
-    return productListElement;
+    return productsGrid;
   }
 }

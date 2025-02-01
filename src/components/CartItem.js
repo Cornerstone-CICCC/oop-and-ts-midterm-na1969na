@@ -1,43 +1,48 @@
 import { Component } from "../common/Component.js";
-import { cartContext } from "../contexts/CartContext.js";
 
 export class CartItem extends Component {
-  constructor(cartItem) {
-    super();
-    this.cartItem = cartItem;
+  constructor(props) {
+    super(props);
+    this.item = props.item;
+    this.cartContext = props.cartContext;
   }
 
   render() {
-    const { id, title, quantity, price } = this.cartItem;
+    const element = document.createElement("div");
+    element.className = "cart-item";
+    element.innerHTML = `
+            <img src="${this.item.image}" alt="${this.item.name}">
+            <div class="cart-item-details">
+                <h4>${this.item.name}</h4>
+                <p>$${this.item.price}</p>
+                <div class="quantity-controls">
+                    <button class="quantity-btn minus">-</button>
+                    <span class="quantity-display">${this.item.quantity}</span>
+                    <button class="quantity-btn plus">+</button>
+                </div>
+                <button class="remove-btn">Remove</button>
+            </div>
+        `;
 
-    const cartItemElement = document.createElement('li')
-    cartItemElement.className = `cart-item`;
-    cartItemElement.innerHTML = `
-      <h3>${title}</h3>
-      <p>$${price * quantity}</p>
-      <button class="decrease-btn">-</button>
-      <span>${quantity}</span>
-      <button class="increase-btn">+</button>
-      <button class="delete-btn">Delete</button>
-    `;
+    this.addEventListeners(element);
+    return element;
+  }
 
-    if (quantity === 1) {
-      const decreaseButton = cartItemElement.querySelector('.decrease-btn');
-      decreaseButton.disabled = true;
-    }
+  addEventListeners(element) {
+    const minusBtn = element.querySelector(".minus");
+    const plusBtn = element.querySelector(".plus");
+    const removeBtn = element.querySelector(".remove-btn");
 
-    cartItemElement.querySelector('.decrease-btn').addEventListener('click', () => {
-      cartContext.decreaseProductQuantity(id);
+    minusBtn.addEventListener("click", () => {
+      this.cartContext.updateQuantity(this.item.id, -1);
     });
 
-    cartItemElement.querySelector('.increase-btn').addEventListener('click', () => {
-      cartContext.increaseProductQuantity(id);
+    plusBtn.addEventListener("click", () => {
+      this.cartContext.updateQuantity(this.item.id, 1);
     });
 
-    cartItemElement.querySelector('.delete-btn').addEventListener('click', () => {
-      cartContext.removeProduct(id);
+    removeBtn.addEventListener("click", () => {
+      this.cartContext.removeItem(this.item.id);
     });
-
-    return cartItemElement;
   }
 }

@@ -1,44 +1,31 @@
 import { Component } from "../common/Component.js";
-import { CartList } from "./CartList.js";
-import { cartContext } from "../contexts/CartContext.js";
 
 export class Header extends Component {
-  constructor() {
-    super();
-    this.isCartListVisible = false;
-    this.cartList = new CartList();
+  constructor(props) {
+    super(props);
+    this.cartContext = props.cartContext;
+    this.element = document.querySelector("header");
+    this.cartButton = document.getElementById("cartButton");
+    this.cartCount = document.getElementById("cartCount");
+    this.cartSidebar = document.getElementById("cartSidebar");
+
+    this.init();
   }
 
-  toggleCartList() {
-    const cartListElement = document.querySelector(".cart-list");
+  init() {
+    this.cartContext.addListener(() => this.updateCartCount());
+    this.cartButton.addEventListener("click", () => this.openCart());
+  }
 
-    if (!this.isCartListVisible) {
-      const cartListItems = cartContext.getCartList();
-      this.cartList.updateItems(cartListItems);
-      cartListElement.style.display = "block";
-    } else {
-      cartListElement.style.display = "none";
-    }
+  updateCartCount() {
+    this.cartCount.textContent = this.cartContext.getItemCount();
+  }
 
-    this.isCartListVisible = !this.isCartListVisible;
+  openCart() {
+    this.cartSidebar.classList.add("open");
   }
 
   render() {
-    const headerElement = document.createElement("div");
-    headerElement.className = "header-container";
-    headerElement.innerHTML = `
-      <h1>QuickCart</h1>
-      <button id="cart-btn">Cart</button>
-    `;
-
-    const cartButton = headerElement.querySelector("#cart-btn");
-    cartButton.addEventListener("click", () => {
-      this.toggleCartList()
-    });
-    
-    const container = document.querySelector("#app");
-    container.appendChild(this.cartList.render());
-
-    return headerElement;
+    return this.element;
   }
 }

@@ -1,43 +1,28 @@
 import { Component } from "../common/Component.js";
-import { cartContext } from "../contexts/CartContext.js";
 
 export class ProductItem extends Component {
-  constructor(product) {
-    super();
-    this.product = product;
-  }
-
-  addProductToCart() {
-    if (this.product){
-      cartContext.addProduct(this.product);
-    }
+  constructor(props) {
+    super(props);
+    this.product = props.product;
+    this.cartContext = props.cartContext;
   }
 
   render() {
-    const productElement = document.createElement("div");
-    productElement.classList.add("product-item");
+    const element = document.createElement("div");
+    element.className = "product-card";
+    element.innerHTML = `
+            <img src="${this.product.image}" alt="${this.product.name}">
+            <h3>${this.product.name}</h3>
+            <div class="product-actions">
+                <p class="price">$${this.product.price}</p>
+                <button>Add to Cart</button>
+            </div>
+        `;
 
-    const productTitle = document.createElement("h2");
-    productTitle.textContent = this.product.title;
-
-    const productPrice = document.createElement("p");
-    productPrice.textContent = `$${this.product.price.toFixed(2)}`;
-
-    const productImage = document.createElement("img");
-    productImage.src = this.product.image;
-    productImage.alt = this.product.title;
-
-    const button = document.createElement("button");
-    button.textContent = "Add to Cart";
-    button.addEventListener("click", () => {
-      this.addProductToCart();
+    element.querySelector("button").addEventListener("click", () => {
+      this.cartContext.addItem(this.product);
     });
 
-    productElement.appendChild(productTitle);
-    productElement.appendChild(productPrice);
-    productElement.appendChild(productImage);
-    productElement.appendChild(button);
-
-    return productElement;
+    return element;
   }
 }

@@ -1,13 +1,23 @@
 import { Component } from "../common/Component.js";
 
 export class Footer extends Component {
-  render() {
-    const footerElement = document.createElement("div");
-    footerElement.className = "footer-container";
-    footerElement.innerHTML = `
-      <h1>QuickCart</h1>
-    `;
+  constructor(props = {}) {
+    super(props);
 
-    return footerElement;
+    const footerContainer = document.querySelector("footer");
+    if (footerContainer) {
+      footerContainer.innerHTML = "";
+      this.mount(footerContainer);
+    } else {
+      console.error("Footer container not found in the DOM.");
+    }
+  }
+
+  render() {
+    const footer = document.createElement("div");
+    footer.innerHTML = `
+            <p>&copy; ${new Date().getFullYear()} Shpping Site. All rights reserved.</p>
+        `;
+    return footer;
   }
 }

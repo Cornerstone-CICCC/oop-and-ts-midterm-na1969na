@@ -1,57 +1,45 @@
 export class CartContext {
   constructor() {
-    this.cartItems = [];
+    this.cart = [];
     this.listeners = [];
   }
 
-  getCartList() {
-    return this.cartItems;
-  }
-  
-  addProduct(product) {
-    const existingItem = this.cartItems.find(item => item.id === product.id);
+  addItem(product) {
+    const existingItem = this.cart.find((item) => item.id === product.id);
     if (existingItem) {
-      existingItem.quantity += 1;
+      existingItem.quantity++;
     } else {
-      this.cartItems.push({ ...product, quantity: 1 });
+      this.cart.push({ ...product, quantity: 1 });
     }
-    console.log(this.cartItems);
     this.notifyListeners();
   }
 
-  increaseProductQuantity(id) {
-    this.cartItems = this.cartItems.map((item) => {
-      if (item.id === id) {
-        item.quantity += 1;
-      }
-      return item;
-    });
+  removeItem(productId) {
+    this.cart = this.cart.filter((item) => item.id !== productId);
     this.notifyListeners();
   }
 
-  decreaseProductQuantity(id) {
-    this.cartItems = this.cartItems.map((item) => {
-      if (item.id === id) {
-        item.quantity -= 1;
-      }
-      return item;
-    });
-    this.notifyListeners();
+  updateQuantity(productId, change) {
+    const item = this.cart.find((item) => item.id === productId);
+    if (item) {
+      item.quantity = Math.max(1, item.quantity + change);
+      this.notifyListeners();
+    }
   }
 
-  removeProduct(id) {
-    this.cartItems = this.cartItems.filter((item) => item.id !== id);
-    this.notifyListeners();
+  getTotal() {
+    return this.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }
 
-  addListener(listener) {
-    this.listeners.push(listener);
+  getItemCount() {
+    return this.cart.reduce((sum, item) => sum + item.quantity, 0);
+  }
+
+  addListener(callback) {
+    this.listeners.push(callback);
   }
 
   notifyListeners() {
-    this.listeners.forEach((listener) => listener(this.cartItems));
+    this.listeners.forEach((callback) => callback());
   }
-  
 }
-
-export const cartContext = new CartContext();

@@ -3,13 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OOP and TS - Midterm</title>
+    <title>Shopping Site</title>
     <link rel="stylesheet" href="./css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div id="app">
-    </div>
+      <header>
+        <nav>
+          <h1>Shopping Site</h1>
+          <button id="cartButton">Cart (<span id="cartCount">0</span>)</button>
+        </nav>
+      </header>
 
+      <main>
+        <section class="hero">
+          <div class="hero-content">
+            <h2>Gift Collection</h2>
+            <p>Find the perfect gift for your loved ones</p>
+            <a href="#products" class="hero-cta">Shop Now</a>
+          </div>
+          <div class="hero-image">
+            <img
+              src="https://images.pexels.com/photos/6690691/pexels-photo-6690691.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              alt="Featured Collection"
+            />
+          </div>
+        </section>
+
+        <div id="products" class="products-list-area"></div>
+
+        <div id="cartSidebar" class="cart-sidebar">
+          <div class="cart-header">
+            <h2>Shopping Cart</h2>
+            <button id="closeCart">&times;</button>
+          </div>
+          <div id="cartItems" class="cart-items"></div>
+          <div class="cart-total">
+            <p>Total: $<span id="totalPrice">0</span></p>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+      </footer>
+    </div>
     <script src="./main.js" type="module"></script>
   </body>
 </html>
